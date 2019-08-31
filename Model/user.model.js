@@ -2,9 +2,10 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const schema = new Schema({
-    PHONE: { type: Number, unique: true, required: true },
-    NAME: { type: String, required: true },
-    ADDRESS: { type: String, required: true },
+    PHONE: { type: String, unique: true, required: true },
+    PASSWORD : { type: String, required: true },
+    NAME : { type: String, required: true },
+    ADDRESS: { type: String },
     BANK: {
         IFSC : { type: String, required: true },
         ACCOUNT_NUMBER : { type: Number, required: true },
@@ -15,4 +16,4 @@ const schema = new Schema({
 });
 
 schema.set('toJSON', { virtuals: true });
-module.exports = mongoose.model('User', schema);
+module.exports = mongoose.model('User', schema, 'user');
