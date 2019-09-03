@@ -10,4 +10,4 @@ const schema = new Schema({
 });
 
 schema.set('toJSON', { virtuals: true });
-module.exports = mongoose.model('Item', schema);
+module.exports = mongoose.model('Item', schema, 'item');
