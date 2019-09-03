@@ -91,6 +91,15 @@ router.post("/login", (req, res, next) => {
                     );
                     return res.status(200).json({
                         message: "Auth successful",
+                        Phone: user[0].PHONE,
+                        NAME: user[0].NAME,
+                        ADDRESS: user[0].ADDRESS,
+                        BANK: {
+                                IFSC : user[0].BANK.IFSC,
+                                ACCOUNT_NUMBER : user[0].BANK.ACCOUNT_NUMBER,
+                                BANK_NAME : user[0].BANK.BANK_NAME
+                            },
+                        IS_ADMIN : user[0].IS_ADMIN,
                         token: token
                     });
                 }
