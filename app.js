@@ -6,10 +6,10 @@ const mongoose = require("mongoose");
 require('dotenv').config()
 
 const userRoutes = require('./Routes/user.route');
-const itemRoutes = require('./Routes/item.route');
+// const itemRoutes = require('./Routes/item.route');
 
 const port = 3000
-
+app.use(express.static('public'),function(){console.log(__dirname);});
 
 mongoose.connect('mongodb://localhost/mongoDb');
 var db = mongoose.connection;
@@ -36,7 +36,11 @@ app.use((req, res, next) => {
   });
 
 app.use("/user", userRoutes);
-app.use("/item", itemRoutes);
+// app.use("/",function(req,res){
+//     res.send('Hello')
+// });
+
+// app.use("/item", itemRoutes);
 
 app.use((req, res, next) => {
   const error = new Error("Not found");
