@@ -3,13 +3,15 @@ const app = express()
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const mongoose = require("mongoose");
+const multer = require('multer');
+const upload = multer({dest: __dirname + '/uploads/images'});
 require('dotenv').config()
 
 const userRoutes = require('./Routes/user.route');
-// const itemRoutes = require('./Routes/item.route');
+const itemRoutes = require('./Routes/item.route');
 
 const port = 3000
-app.use(express.static('public'),function(){console.log(__dirname);});
+// app.use(express.static('public'),function(){console.log(__dirname);});
 
 mongoose.connect('mongodb://localhost/mongoDb');
 var db = mongoose.connection;
@@ -19,8 +21,8 @@ db.once('open', function callback () {
 });
 
 
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ limit: '50mb',extended: false }));
+app.use(bodyParser.json({limit: '50mb'}));
 app.use(cors());
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
@@ -40,7 +42,7 @@ app.use("/user", userRoutes);
 //     res.send('Hello')
 // });
 
-// app.use("/item", itemRoutes);
+app.use("/item", itemRoutes);
 
 app.use((req, res, next) => {
   const error = new Error("Not found");
