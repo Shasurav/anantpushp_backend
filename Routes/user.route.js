@@ -8,8 +8,10 @@ const User = require("../Model/user.model");
 
 
 router.post("/signup", (req, res, next) => {
+    console.log(req.body);
+    
     User.find({
-        PHONE: req.body.contact
+        phone: req.body.contact
         })
         .exec()
         .then(user => {
@@ -29,16 +31,10 @@ router.post("/signup", (req, res, next) => {
                         });
                     } else {
                         const user = new User({
-                            PHONE: req.body.contact,
-                            PASSWORD: hash,
-                            NAME: req.body.name,
-                            ADDRESS: req.body.address,
-                            BANK: {
-                                IFSC : req.body.bank.ifsc,
-                                ACCOUNT_NUMBER : req.body.bank.account_number,
-                                BANK_NAME : req.body.bank.bank_name
-                            },
-                            IS_ADMIN : false,
+                            phone: req.body.contact,
+                            password: hash,
+                            name: req.body.name,
+                            is_admin : false,
                             createdDate: new Date()
                         });
                         user
@@ -46,7 +42,7 @@ router.post("/signup", (req, res, next) => {
                             .then(result => {
                                 console.log(result);
                                 res.status(201).json({
-                                    message: "User created"
+                                    message: "User created",
                                 });
                             })
                             .catch(err => {
@@ -63,7 +59,7 @@ router.post("/signup", (req, res, next) => {
 
 router.post("/login", (req, res, next) => {
     User.find({
-            PHONE: req.body.contact
+            phone: req.body.contact
         })
         .exec()
         .then(user => {
@@ -74,7 +70,7 @@ router.post("/login", (req, res, next) => {
             }
             console.log(user);
             
-            bcrypt.compare(req.body.password, user[0].PASSWORD, (err, result) => {
+            bcrypt.compare(req.body.password, user[0].password, (err, result) => {
                 if (err) {
                     return res.status(401).json({
                         message: "Auth failed"
@@ -82,8 +78,8 @@ router.post("/login", (req, res, next) => {
                 }
                 if (result) {
                     const token = jwt.sign({
-                            Phone: user[0].PHONE,
-                            NAME: user[0].NAME
+                            phone: user[0].phone,
+                            name: user[0].name
                         },
                         process.env.secret, {
                             expiresIn: "1h"
@@ -91,15 +87,10 @@ router.post("/login", (req, res, next) => {
                     );
                     return res.status(200).json({
                         message: "Auth successful",
-                        Phone: user[0].PHONE,
-                        NAME: user[0].NAME,
-                        ADDRESS: user[0].ADDRESS,
-                        BANK: {
-                                IFSC : user[0].BANK.IFSC,
-                                ACCOUNT_NUMBER : user[0].BANK.ACCOUNT_NUMBER,
-                                BANK_NAME : user[0].BANK.BANK_NAME
-                            },
-                        IS_ADMIN : user[0].IS_ADMIN,
+                        _id : user[0]._id,
+                        phone: user[0].phone,
+                        name: user[0].name,
+                        is_admin : user[0].is_admin,
                         token: token
                     });
                 }
@@ -118,7 +109,7 @@ router.post("/login", (req, res, next) => {
 
 router.delete("/:userId", (req, res, next) => {
     User.remove({
-            PHONE: req.params.contact
+            phone: req.params.contact
         })
         .exec()
         .then(result => {
@@ -135,3 +126,5 @@ router.delete("/:userId", (req, res, next) => {
 });
 
 module.exports = router;
+
+
