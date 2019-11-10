@@ -5,13 +5,10 @@ const schema = new Schema({
     order_id: { type: Schema.Types.ObjectId, unique: true, required: true },
     timeStamp: { type: Date, required: true },
     generated_by: { type: String, required: true },
-    ttems:[{
-        item_id : { type: Number, unique: true, required: true },
-        qty : { type: Number, required: true },
-        value : { type: Number, required: true }
-    }],
-    total_amount : { type: Number },
+    items:[],
     status : { type: String },
+    address : {},
+    bank : {}
 });
 
 schema.set('toJSON', { virtuals: true });
