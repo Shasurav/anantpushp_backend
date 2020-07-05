@@ -9,7 +9,13 @@ const schema = new Schema({
     password : { type: String, required: true },
     name : { type: String, required: true },
     is_admin : { type: Boolean, default: false },
-    createdDate: { type: Date, default: Date.now }
+    createdDate: { type: Date, default: Date.now },
+    refferedBy : {
+        _id : {type: String, required: true },
+        name :{type: String, required: true }
+    },
+    level : {type: Number, required: true },
+    referralCode : {type: String, required: true }
 });
 
 schema.set('toJSON', { virtuals: true });

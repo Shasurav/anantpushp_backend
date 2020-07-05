@@ -5,23 +5,52 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
 const User = require("../Model/user.model");
+const helper = require("../controller/helper");
 
-
-router.post("/signup", (req, res, next) => {
+router.post("/signup", async (req, res, next) => {
     console.log(req.body);
-    
+    var refferedby_id ;
+    var refferedbyname ;
+    var refferedbylevel;
+
+
+    User.find({
+        referralCode: req.body.refferalCode
+    })
+    .exec()
+    .then(result => {
+        console.log(result , 'user');
+        
+        if (result.length < 1) {
+            return res.status(401).json({
+                message: "Invalid Refferal Code"
+            });
+        }else {
+            refferedby_id = result[0]._id ;
+            refferedbyname = result[0].name 
+            refferedbylevel = result[0].level
+        }
+    })
+    .catch(err => {
+        console.log(err);
+        res.status(500).json({
+            error: err
+        });
+    })
+    .then(
     User.find({
         phone: req.body.contact
         })
         .exec()
         .then(user => {
+            console.log("enter");
+            console.log(user);
+            
             if (user.length >= 1) {
                 return res.status(409).json({
                     message: "Already exists"
                 });
             } else {
-                console.log(req.body.password,'pass');
-                
                 bcrypt.hash(req.body.password, 10, (err, hash) => {
                     if (err) {
                         console.log(err);
@@ -35,7 +64,13 @@ router.post("/signup", (req, res, next) => {
                             password: hash,
                             name: req.body.name,
                             is_admin : false,
-                            createdDate: new Date()
+                            createdDate: new Date(),
+                            refferedBy :{
+                                _id : refferedby_id,
+                                name : refferedbyname
+                            },
+                            level : refferedbylevel + 1,
+                            referralCode : helper.coupongenerator()
                         });
                         user
                             .save()
@@ -54,7 +89,8 @@ router.post("/signup", (req, res, next) => {
                     }
                 });
             }
-        });
+        })
+    )
 });
 
 router.post("/login", (req, res, next) => {
